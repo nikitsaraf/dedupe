@@ -81,6 +81,7 @@ def invertIndex(data, tfidf_fields, constrained_matching=False, df_index=None):
                     inverted_index[field][token] = {'idf': idf, 
                                                     'occurrences': set(occurences)}
 
+
     for field in token_vector:
         field_inverted_index = inverted_index[field]
         for (record_id, tokens) in token_vector[field].iteritems():

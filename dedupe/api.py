@@ -398,16 +398,23 @@ class Dedupe:
 
         candidate_keys = core.blockedPairs(blocked_keys, constrained_matching, data)
         candidate_records = core.blockedPairs(blocked_records, constrained_matching)
-        
-        self.dupes = core.scoreDuplicates(candidate_keys,
-                                            candidate_records,
-                                            self.data_model,
-                                            threshold)
 
+        candidate_keys, ids = itertools.tee(candidate_keys)
+        peek = ids.next()
+        id_type = type(peek[0])
+        ids = itertools.chain([peek], ids)
+
+
+        self.dupes = core.scoreDuplicates(candidate_keys,
+                                          candidate_records,
+                                          id_type,
+                                          self.data_model,
+                                          threshold)
+        
         if constrained_matching:
-          clusters = clustering.clusterConstrained(self.dupes, cluster_threshold)
+            clusters = clustering.clusterConstrained(self.dupes, cluster_threshold)
         else:
-          clusters = clustering.cluster(self.dupes, cluster_threshold)
+            clusters = clustering.cluster(self.dupes, cluster_threshold)
 
         return clusters
 
